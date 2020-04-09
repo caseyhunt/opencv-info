@@ -26,6 +26,7 @@ def get_images_from_directory():
 
 """
 computer vision stuff we need to flush through :)
+TODO: identify only one face
 """
 def computer_vision_stuff():
     image = input('what is the name of your image? ')
