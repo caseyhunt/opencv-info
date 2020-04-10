@@ -23,36 +23,31 @@ def get_images_from_directory():
             photo_array.append(filename)
         else:
             continue
-
+        
+        
+        
 """
 computer vision stuff we need to flush through :)
 TODO: identify only one face
 """
-def computer_vision_stuff():
-    image = input('what is the name of your image? ')
-
+def compVis():
+    image = "images/" + input('what is the name of your image? ') 
     face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
     eye_cascade = cv2.CascadeClassifier('haarcascade_eye.xml')
-
-
     img = cv2.imread(image)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-
     faces = face_cascade.detectMultiScale(gray, 1.3, 5)
     for (x,y,w,h) in faces:
         img = cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,0),2)
         roi_gray = gray[y:y+h, x:x+w]
         roi_color = img[y:y+h, x:x+w]
         eyes = eye_cascade.detectMultiScale(roi_gray)
-        for (ex,ey,ew,eh) in eyes:
-            cv2.rectangle(roi_color,(ex,ey),(ex+ew,ey+eh),(0,255,0),2)
-
+    for (ex,ey,ew,eh) in eyes:
+        cv2.rectangle(roi_color,(ex,ey),(ex+ew,ey+eh),(0,255,0),2)
     if faces == ():
         print('no face')
     else:
-        print(faces)
-
-
+        print(len(faces))
     cv2.imshow('img',img)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
@@ -62,6 +57,7 @@ def computer_vision_stuff():
 Main function
 """
 def main():
+    compVis()
     get_images_from_directory()
     print(np.array(photo_array))
 
