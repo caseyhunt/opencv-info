@@ -23,8 +23,8 @@ destination = directory + "/images_2"
 jsonFile = directory + "/puertorican/puertorican.json"
 
 def openJSON():
-    with open(jsonFile) as f:
-        data = json.load(f)
+    with open(jsonFile,'r',encoding='utf-8') as j:
+        data = json.load(j)
         print(data)
 
 """
@@ -77,7 +77,7 @@ def main():
     get_images_from_directory()
     print(np.array(photo_array))
     copyToDir(photo_array)
-    #openJSON()
+    openJSON()
 
 if __name__== "__main__":
     main()
