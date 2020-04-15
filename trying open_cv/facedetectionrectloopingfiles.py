@@ -10,11 +10,22 @@ import numpy as np
 import cv2
 import os
 import shutil
+import json
 
+"""variable definitions"""
 photo_array = []
 directory = os.path.dirname(os.path.abspath(__file__))
-source = directory + "/images"
+#this is where your source goes
+source = directory + "/images/"
+#this is where your destination goes
 destination = directory + "/images_2"
+#this is the location of the json file
+jsonFile = directory + "/puertorican/puertorican.json"
+
+def openJSON():
+    with open(jsonFile) as f:
+        data = json.load(f)
+        print(data)
 
 """
 Gets all image names from specified directory
@@ -44,14 +55,17 @@ def compVis(pic):
     print("image name ", pic, " number of faces= ", numFaces)
     return(numFaces)
 
-"""copy file to new directory if there is one face in the picture (I haven't gotten it to work yet...)"""
+"""copy file to new directory if there is one face in the picture
+Enter your source and destination in variable definitions above"""
 def copyToDir(origDir):
     for picture in origDir:
         if compVis(picture) == 1:
-            fileSrc = "images/" + picture
-            fileDest = directory + "/test/" + picture
-            shutil.copyfile(fileSrc, fileDest)
-        print("files copied successfully")
+            fileSrc = source + picture
+            fileDest = destination
+            shutil.copy(fileSrc, fileDest)
+            print(picture, "copied successfully")
+        else:
+            print(picture, "not copied")
             
             
         
@@ -62,7 +76,8 @@ def main():
     compVis("1.jpg")
     get_images_from_directory()
     print(np.array(photo_array))
-    #copyToDir(photo_array)
+    copyToDir(photo_array)
+    #openJSON()
 
 if __name__== "__main__":
     main()
