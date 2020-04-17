@@ -16,10 +16,14 @@ import json
 """variable definitions"""
 photo_array = []
 tag_array = []
-exclude = []
-include_only = []
+filtered_array = []
 num_face = []
 directory = os.path.dirname(os.path.abspath(__file__))
+
+#this is where you define must include/must exclude hashtag criteria
+exclude = ['highfidelity', 'makeup']
+#any must_include criteria will be required simultaneously. a photo must have all criteria.
+include = []
 #this is where your hashtag name goes (source directory should be named hashtag)
 hashtag_name = "puertorican"
 source = directory + "/" + hashtag_name + "/"
@@ -35,7 +39,7 @@ def openJSON(fileName):
         return json.load(j)
         print('JSON Successfully Loaded')
 
-"""populate tags_array with filename and tag list"""
+"""populate tags_array with filename and tag list, get filename from url in JSON file"""
 def mkTagArr(json_data):
     for x in range (0, len(json_data['GraphImages'])):
         url = json_data['GraphImages'][x]['display_url']
@@ -46,6 +50,44 @@ def mkTagArr(json_data):
                 tag_array.append([picName, tags])
             else:
                 continue
+
+"""function to compare two arrays, reject if any item in arrayReject are present"""           
+def parseArrRej(arrayIn, arrayReject):
+    if arrayReject == []:
+        print('no exclusion criteria')
+    else:
+            for x in range (0, len(arrayReject)):
+                try: 
+                    arrayIn.index(arrayReject[x])
+                    print("present")
+                    return True
+                except:
+                    print("not present")
+
+"""function to compare two arrays, reject if all items in arrayInclude aren't present"""
+def parseArrInc(arrayIn, arrayInclude):
+    if arrayInclude == []:
+        print('no inclusion criteria')
+    else:
+            for x in range(0, len(arrayInclude)):
+                try:
+                    arrayIn.index(arrayInclude[x])
+                    print("present")
+                except:
+                    print("not present")
+                    return False
+
+
+"""use result of array comparision to create an array containing images we want to use"""
+def mkFilteredArr(arrToFilter, excArray, incArray):
+    for x in range(0,len(arrToFilter)):
+        if parseArrRej(arrToFilter[x][1], excArray)!=True and parseArrInc(arrToFilter[x][1], incArray)!=False:
+            filtered_array.append(arrToFilter[x][0])
+        else:
+            continue
+       
+            
+    
               
 """
 computer vision stuff we need to flush through :)
@@ -73,13 +115,13 @@ def compVis(pic):
             
 def copyPic(origDir):
     for x in range (0, len(origDir)):
-        if compVis(origDir[x][0]) == 1:
-            fileSrc = source + origDir[x][0]
+        if compVis(origDir[x]) == 1:
+            fileSrc = source + origDir[x]
             fileDest = destination
             shutil.copy(fileSrc, fileDest)
-            print(origDir[x][0], "copied successfully")
+            print(origDir[x], "copied successfully")
         else:
-            print(origDir[x][0], "not copied")
+            print(origDir[x], "not copied, not one face")
             
         
 """
@@ -87,12 +129,9 @@ Main function
 """
 def main():
     mkTagArr(openJSON(jsonFile))
-    print(tag_array)
-    compVis(tag_array[6][0])
-    print(tag_array[4][0])
-    print(len(tag_array))
-    copyPic(tag_array)
-
+    mkFilteredArr(tag_array, exclude, include)
+    print(filtered_array)
+    copyPic(filtered_array)
 
 if __name__== "__main__":
     main()
