@@ -26,9 +26,9 @@ exclude = ['highfidelity', 'makeup']
 include = []
 #this is where your hashtag name goes (source directory should be named hashtag)
 hashtag_name = "puertorican"
-source = directory + "/" + hashtag_name + "/"
+source = directory + +"/hashtags"+ "/" + hashtag_name + "/"
 #this is where your destination directory goes for processed images
-destination = directory + "/images_2"
+destination = directory + "/" + hashtag_name + "_sorted/"
 #this is the location of the json file
 jsonFile = directory + "/" + hashtag_name + "/" + hashtag_name + ".json"
 
